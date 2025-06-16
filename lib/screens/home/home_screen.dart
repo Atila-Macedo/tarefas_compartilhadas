@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../utils/app_routes.dart';
 import '../../widgets/app_scaffold.dart';
 import '../task_list/task_list_screen.dart';
+import '../task_list/new_list_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -13,7 +14,12 @@ class HomeScreen extends StatelessWidget {
       currentIndex: 0,
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          // TODO: Implementar criação de nova lista
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const NewListScreen(),
+            ),
+          );
         },
         icon: const Icon(Icons.add),
         label: const Text('Nova Lista'),
