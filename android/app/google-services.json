@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "780604593549",
+    "project_id": "tarefas-compartilhadas-c4ec1",
+    "storage_bucket": "tarefas-compartilhadas-c4ec1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:780604593549:android:973a02bc9bf68503ecd9c4",
+        "android_client_info": {
+          "package_name": "com.example.seu_app_de_tarefas"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdxvI5FF7rKu-v3Qla04wxmWb4jFpAar0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
