@@ -4,7 +4,6 @@ import '../../utils/app_routes.dart';
 import '../../widgets/app_scaffold.dart';
 import '../../providers/task_list_provider.dart';
 import '../../models/task_list.dart';
-import '../task_list/task_list_screen.dart';
 import '../task_list/new_list_screen.dart';
 import 'package:intl/intl.dart';
 

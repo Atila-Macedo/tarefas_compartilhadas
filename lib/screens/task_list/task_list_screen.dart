@@ -197,7 +197,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
                 
                 // Lista de tarefas
                 Expanded(
-                  child: activeTasks.isEmpty && completedTasks.isEmpty
+                  child: (activeTasks.isEmpty && completedTasks.isEmpty)
                       ? const Center(
                           child: Text(
                             'Nenhuma tarefa adicionada ainda',
@@ -210,15 +210,15 @@ class _TaskListScreenState extends State<TaskListScreen> {
                       : ListView(
                           padding: const EdgeInsets.symmetric(horizontal: 16.0),
                           children: [
-                            // Tarefas ativas
+                            // Tarefas pendentes
                             if (activeTasks.isNotEmpty) ...[
                               _buildSectionHeader('Tarefas Pendentes', activeTasks.length),
                               ...activeTasks.map((task) => _buildTaskCard(task)),
                               const SizedBox(height: 16),
                             ],
-                            
                             // Tarefas concluídas
                             if (completedTasks.isNotEmpty) ...[
+                              Divider(height: 32, thickness: 1, color: Colors.grey[300]),
                               _buildSectionHeader('Tarefas Concluídas', completedTasks.length),
                               ...completedTasks.map((task) => _buildTaskCard(task)),
                             ],
