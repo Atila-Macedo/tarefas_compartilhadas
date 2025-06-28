@@ -17,21 +17,14 @@ class SettingsScreen extends StatelessWidget {
             leading: const Icon(Icons.person),
             title: const Text('Perfil'),
             onTap: () {
-              // TODO: Implementar navegação para perfil
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.notifications),
-            title: const Text('Notificações'),
-            onTap: () {
-              // TODO: Implementar configurações de notificações
+              Navigator.pushNamed(context, AppRoutes.profile);
             },
           ),
           ListTile(
             leading: const Icon(Icons.color_lens),
             title: const Text('Tema'),
             onTap: () {
-              // TODO: Implementar configurações de tema
+              Navigator.pushNamed(context, AppRoutes.theme);
             },
           ),
           ListTile(
