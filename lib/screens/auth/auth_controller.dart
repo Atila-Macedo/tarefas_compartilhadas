@@ -1,31 +1,16 @@
 import 'package:seu_app_de_tarefas/models/user_model.dart';
-import 'package:seu_app_de_tarefas/screens/auth/auth_repository.dart';
-import 'package:flutter/material.dart';
+import 'package:seu_app_de_tarefas/screens/auth/service/auth_service.dart';
 
 class AuthController {
-  final AuthRepository _repository = AuthRepository();
+  final AuthService _service = AuthService();
 
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
-
-  Future<bool> login() async {
-    final user = UserModel(
-      email: emailController.text.trim(),
-      password: passwordController.text.trim(),
-    );
-    return await _repository.login(user);
+  Future<bool> login(String email, String password) async {
+    final user = UserModel(email: email, password: password);
+    return await _service.login(user);
   }
 
-  Future<bool> register() async {
-    final user = UserModel(
-      email: emailController.text.trim(),
-      password: passwordController.text.trim(),
-    );
-    return await _repository.register(user);
-  }
-
-  void dispose() {
-    emailController.dispose();
-    passwordController.dispose();
+  Future<bool> register(String email, String password) async {
+    final user = UserModel(email: email, password: password);
+    return await _service.register(user);
   }
 }

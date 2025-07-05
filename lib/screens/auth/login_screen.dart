@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:seu_app_de_tarefas/models/user_model.dart';
+import 'package:seu_app_de_tarefas/screens/auth/auth_controller.dart';
 import '../../utils/app_routes.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -13,7 +14,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _userController = UserModel();
+  final AuthController _controller = AuthController();
 
   @override
   void dispose() {
@@ -22,10 +23,20 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  void _handleLogin() {
+  void _handleLogin() async {
     if (_formKey.currentState!.validate()) {
-      _userController.copyWith(email:_emailController.text, password:_passwordController.text);
-      Navigator.pushReplacementNamed(context, AppRoutes.home);
+      final success = await _controller.login(
+        _emailController.text,
+        _passwordController.text,
+      );
+
+      if (success) {
+        Navigator.pushReplacementNamed(context, '/home');
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Email ou senha inválidos')),
+        );
+      }
     }
   }
 

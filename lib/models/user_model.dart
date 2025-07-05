@@ -2,16 +2,17 @@ class UserModel {
   String? email;
   String? password;
 
-  UserModel({this.email,  this.password});
+  UserModel({this.email, this.password});
 
-  UserModel copyWith({String? email,String? password}) {
+  UserModel copyWith({String? email, String? password}) {
     return UserModel(
       email: email ?? this.email,
       password: password ?? this.password,
     );
   }
+
   Map<String, dynamic> toJson() => {
-    'email': email,
-    'password': password,
-  };
+        'Email': email,
+        'Senha': password,
+      };
 }
