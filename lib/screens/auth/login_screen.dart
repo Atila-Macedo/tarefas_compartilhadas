@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:seu_app_de_tarefas/models/user_model.dart';
-import 'package:seu_app_de_tarefas/screens/auth/auth_controller.dart';
+import 'package:seu_app_de_tarefas/screens/auth/controller/auth_login_controller.dart';
+import 'package:seu_app_de_tarefas/services/service_flutter_api.dart';
+
 import '../../utils/app_routes.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -14,7 +15,15 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final AuthController _controller = AuthController();
+  late final AuthController _controllerService;
+  bool _isLoading = false;
+  bool _obscurePassword = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _controllerService = AuthController(ServiceFlutterApi());
+  }
 
   @override
   void dispose() {
@@ -25,17 +34,33 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _handleLogin() async {
     if (_formKey.currentState!.validate()) {
-      final success = await _controller.login(
-        _emailController.text,
-        _passwordController.text,
-      );
-
-      if (success) {
-        Navigator.pushReplacementNamed(context, '/home');
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Email ou senha inválidos')),
+      setState(() {
+        _isLoading = true;
+      });
+      try {
+        final response = await _controllerService.loginUser(
+          _emailController.text,
+          _passwordController.text,
         );
+        setState(() {
+          _isLoading = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Bem-vindo(a), ${response!.name}!"),
+            duration: const Duration(milliseconds: 1500),
+          ),
+        );
+        await Future.delayed(const Duration(seconds: 2));
+        Navigator.pushReplacementNamed(context, AppRoutes.home);
+      } catch (ex) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Erro ao fazer login")),
+        );
+      } finally {
+        setState(() {
+          _isLoading = false;
+        });
       }
     }
   }
@@ -106,11 +131,19 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: _passwordController,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         labelText: 'Senha',
-                        prefixIcon: Icon(Icons.lock_outline),
+                        prefixIcon: const Icon(Icons.lock_outline),
+                        suffixIcon: IconButton(
+                          icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
+                          onPressed: () {
+                            setState(() {
+                              _obscurePassword = !_obscurePassword;
+                            });
+                          },
+                        ),
                       ),
-                      obscureText: true,
+                      obscureText: _obscurePassword,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Por favor, insira sua senha';
@@ -120,8 +153,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 24),
                     ElevatedButton(
-                      onPressed: _handleLogin,
-                      child: const Text('Entrar'),
+                      onPressed: _isLoading ? null : _handleLogin,
+                      child: _isLoading
+                          ? const SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : const Text('Entrar'),
                     ),
                     const SizedBox(height: 16),
                     TextButton(

@@ -1,8 +1,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'providers/theme_provider.dart';
+
 import 'providers/task_list_provider.dart';
+import 'providers/theme_provider.dart';
 import 'utils/app_routes.dart';
 
 void main() {
@@ -22,6 +23,7 @@ class MyApp extends StatelessWidget {
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, child) {
           return MaterialApp(
+            debugShowCheckedModeBanner: false,
             title: 'App de Tarefas',
             theme: themeProvider.getTheme().copyWith(
               inputDecorationTheme: InputDecorationTheme(

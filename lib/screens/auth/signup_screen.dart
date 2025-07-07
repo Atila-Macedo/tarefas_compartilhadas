@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../utils/app_routes.dart';
+import 'package:seu_app_de_tarefas/screens/auth/controller/auth_login_controller.dart';
+import 'package:seu_app_de_tarefas/services/service_flutter_api.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -13,7 +14,16 @@ class _SignupScreenState extends State<SignupScreen> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-
+  late final AuthController _controllerService;
+  bool _isLoading = false;
+  bool _obscurePassword = true;
+ 
+  @override
+  void initState() {
+    super.initState();
+    _controllerService = AuthController(ServiceFlutterApi());
+  }
+  
   @override
   void dispose() {
     _nameController.dispose();
@@ -22,10 +32,35 @@ class _SignupScreenState extends State<SignupScreen> {
     super.dispose();
   }
 
-  void _handleSignup() {
+  void _handleSignup() async {
     if (_formKey.currentState!.validate()) {
-      // TODO: Implementar lógica de cadastro
-      Navigator.pushReplacementNamed(context, AppRoutes.home);
+      setState(() {
+        _isLoading = true;
+      });
+      try {
+        final response = await _controllerService.registerUser(
+          _nameController.text,
+          _emailController.text,
+          _passwordController.text,
+        );
+        if (response == false) {
+          throw Exception("Erro ao criar usuário");
+        }
+        setState(() {
+          _isLoading = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Usuário criado com sucesso! Faça login.")),
+        );
+      } catch (ex) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Erro ao fazer login")),
+        );
+      } finally {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -107,11 +142,19 @@ class _SignupScreenState extends State<SignupScreen> {
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: _passwordController,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         labelText: 'Senha',
-                        prefixIcon: Icon(Icons.lock_outline),
+                        prefixIcon: const Icon(Icons.lock_outline),
+                        suffixIcon: IconButton(
+                          icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
+                          onPressed: () {
+                            setState(() {
+                              _obscurePassword = !_obscurePassword;
+                            });
+                          },
+                        ),
                       ),
-                      obscureText: true,
+                      obscureText: _obscurePassword,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Por favor, insira sua senha';
@@ -122,7 +165,13 @@ class _SignupScreenState extends State<SignupScreen> {
                     const SizedBox(height: 24),
                     ElevatedButton(
                       onPressed: _handleSignup,
-                      child: const Text('Cadastrar'),
+                      child: _isLoading
+                          ? const CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2,
+
+                            )
+                          : const Text('Cadastrar'),
                     ),
                     const SizedBox(height: 16),
                     TextButton(
